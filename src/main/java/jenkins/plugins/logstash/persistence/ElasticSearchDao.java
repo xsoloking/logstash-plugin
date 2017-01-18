@@ -24,22 +24,26 @@
 
 package jenkins.plugins.logstash.persistence;
 
-import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.exception.ExceptionUtils;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.ContentType;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.client.utils.URIBuilder;
+import static com.google.common.collect.Ranges.closedOpen;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.net.URI;
 import java.net.URISyntaxException;
+
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.exception.ExceptionUtils;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
+
+import com.google.common.collect.Range;
 
 /**
  * Elastic Search Data Access Object.
@@ -51,6 +55,7 @@ public class ElasticSearchDao extends AbstractLogstashIndexerDao {
   final HttpClientBuilder clientBuilder;
   final URI uri;
   final String auth;
+  final Range<Integer> successCodes = closedOpen(200,300);
 
   //primary constructor used by indexer factory
   public ElasticSearchDao(String host, int port, String key, String username, String password) {
@@ -109,7 +114,7 @@ public class ElasticSearchDao extends AbstractLogstashIndexerDao {
       httpClient = clientBuilder.build();
       response = httpClient.execute(post);
 
-      if (response.getStatusLine().getStatusCode() != 201) {
+      if (!successCodes.contains(response.getStatusLine().getStatusCode())) {
         throw new IOException(this.getErrorMessage(response));
       }
     } finally {
