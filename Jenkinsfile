@@ -9,7 +9,7 @@ def LOGSTASH_LOGFILE="syslog-test.log"
 node('linux') {
       stage('Docker'){
             docker.withRegistry(LOGSTASH_DOCKER_REGISTRY) { 
-                    withEnv(["JAVA_HOME=${tool jdk8}",
+                    withEnv(["JAVA_HOME=${tool 'jdk8'}",
                               'PATH+JAVA=${JAVA_HOME}/bin',
                               "PATH+MAVEN=${tool 'mvn'}/bin"]) {
                     sh "mvn clean package --quiet"
