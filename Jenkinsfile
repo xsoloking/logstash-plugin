@@ -7,6 +7,7 @@ def LOGSTASH_LOGS_DIR="target/logs"
 def LOGSTASH_LOGFILE="syslog-test.log"
 
 node('linux') {
+      stage 'Docker' {
       docker.withRegistry(LOGSTASH_DOCKER_REGISTRY) { 
 
         sh "mvn clean package --quiet"
@@ -25,6 +26,7 @@ node('linux') {
             ${LOGSTASH_DOCKER_REGISTRY}/${LOGSTASH_DOCKER_IMAGE}:${LOGSTASH_DOCKER_VERSION} \
          """
          sh "mvn verify -DskipIntegrationTests=false"
+      }
       }
 }
 
