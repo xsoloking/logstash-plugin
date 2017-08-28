@@ -6,7 +6,7 @@ def LOGSTASH_PIPELINE_DIR="src/test/resources/logstash/pipeline"
 def LOGSTASH_LOGS_DIR="target/logs"
 def LOGSTASH_LOGFILE="syslog-test.log"
 
-if (isUnix()) {
+
       docker.withRegistry(LOGSTASH_DOCKER_REGISTRY) { 
 
         sh "mvn clean package --quiet"
@@ -26,5 +26,5 @@ if (isUnix()) {
          """
          sh "mvn verify -DskipIntegrationTests=false"
       }
-}
+
 buildPlugin()
