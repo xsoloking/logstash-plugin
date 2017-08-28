@@ -6,6 +6,7 @@ def LOGSTASH_PIPELINE_DIR="src/test/resources/logstash/pipeline"
 def LOGSTASH_LOGS_DIR="target/logs"
 def LOGSTASH_LOGFILE="syslog-test.log"
 
+
 node('linux') {
       stage('Docker'){
             checkout scm
@@ -13,6 +14,7 @@ node('linux') {
                     withEnv(["JAVA_HOME=${tool 'jdk8'}",
                               'PATH+JAVA=${JAVA_HOME}/bin',
                               "PATH+MAVEN=${tool 'mvn'}/bin"]) {
+                    def TRAVIS_BUILD_DIR=env.WORKSPACE
                     sh "mvn clean package --quiet"
                     sh "mkdir -p ${TRAVIS_BUILD_DIR}/${LOGSTASH_LOGS_DIR}"
                     sh "touch ${TRAVIS_BUILD_DIR}/${LOGSTASH_LOGS_DIR}/${LOGSTASH_LOGFILE}"
