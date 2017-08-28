@@ -8,6 +8,7 @@ def LOGSTASH_LOGFILE="syslog-test.log"
 
 node('linux') {
       stage('Docker'){
+            checkout scm
             docker.withRegistry(LOGSTASH_DOCKER_REGISTRY) { 
                     withEnv(["JAVA_HOME=${tool 'jdk8'}",
                               'PATH+JAVA=${JAVA_HOME}/bin',
