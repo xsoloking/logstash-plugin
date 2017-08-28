@@ -1,1 +1,9 @@
+def LOGSTASH_DOCKER_IMAGE="logstash/logstash"
+def LOGSTASH_DOCKER_REGISTRY="docker.elastic.co"
+def LOGSTASH_DOCKER_VERSION="5.4.1" 
+
+docker.withRegistry(LOGSTASH_DOCKER_REGISTRY) {
+   sh "docker pull ${LOGSTASH_DOCKER_REGISTRY}/${LOGSTASH_DOCKER_IMAGE}:${LOGSTASH_DOCKER_VERSION}"
+}
+
 buildPlugin()
