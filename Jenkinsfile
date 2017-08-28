@@ -11,7 +11,7 @@ node('linux') {
             docker.withRegistry(LOGSTASH_DOCKER_REGISTRY) { 
                     withEnv(["JAVA_HOME=${tool jdk8}",
                               'PATH+JAVA=${JAVA_HOME}/bin',
-                              "PATH+MAVEN=${tool 'mvn'}/bin"]) { {
+                              "PATH+MAVEN=${tool 'mvn'}/bin"]) {
                     sh "mvn clean package --quiet"
                     sh "mkdir -p ${TRAVIS_BUILD_DIR}/${LOGSTASH_LOGS_DIR}"
                     sh "touch ${TRAVIS_BUILD_DIR}/${LOGSTASH_LOGS_DIR}/${LOGSTASH_LOGFILE}"
