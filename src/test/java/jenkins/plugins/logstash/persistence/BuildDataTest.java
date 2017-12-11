@@ -28,8 +28,10 @@ import org.mockito.stubbing.Answer;
 
 import hudson.EnvVars;
 import hudson.model.AbstractBuild;
+import hudson.model.Computer;
 import hudson.model.Environment;
 import hudson.model.EnvironmentList;
+import hudson.model.Executor;
 import hudson.model.Node;
 import hudson.model.Project;
 import hudson.model.Result;
@@ -61,6 +63,8 @@ public class BuildDataTest {
   @Mock Environment mockEnvironment;
   @Mock Date mockDate;
   @Mock TaskListener mockListener;
+  @Mock Computer mockComputer;
+  @Mock Executor mockExecutor;
 
 
   @Before
@@ -97,6 +101,8 @@ public class BuildDataTest {
     when(mockRootProject.getFullName()).thenReturn("parent/RootBuildDataTest");
 
     when(mockDate.getTime()).thenReturn(60L);
+    when(mockBuild.getExecutor()).thenReturn(mockExecutor);
+    when(mockExecutor.getOwner()).thenReturn(mockComputer);
   }
 
   @After
@@ -124,7 +130,7 @@ public class BuildDataTest {
     verify(mockBuild).getStartTimeInMillis();
     verify(mockBuild).getUrl();
     verify(mockBuild).getAction(AbstractTestResultAction.class);
-    verify(mockBuild).getBuiltOn();
+    verify(mockBuild).getExecutor();
     verify(mockBuild).getNumber();
     verify(mockBuild).getTimestamp();
     verify(mockBuild, times(4)).getRootBuild();
@@ -132,6 +138,8 @@ public class BuildDataTest {
     verify(mockBuild).getSensitiveBuildVariables();
     verify(mockBuild).getEnvironments();
     verify(mockBuild).getEnvironment(mockListener);
+
+    verify(mockExecutor).getOwner();
 
     verify(mockRootProject).getName();
     verify(mockRootProject).getFullName();
@@ -150,9 +158,15 @@ public class BuildDataTest {
     verify(mockTestResultAction, times(1)).getFailedTests();
   }
 
+  private void verifiyNodeActions(int labelCount) {
+      verify(mockComputer).getNode();
+      verify(mockNode, times(2)).getDisplayName();
+      verify(mockNode, times(labelCount)).getLabelString();
+  }
+
   @Test
   public void constructorSuccessBuiltOnNull() throws Exception {
-    when(mockBuild.getBuiltOn()).thenReturn(null);
+     when(mockComputer.getNode()).thenReturn(null);
 
     // Unit under test
     BuildData buildData = new BuildData(mockBuild, mockDate, mockListener);
@@ -170,7 +184,7 @@ public class BuildDataTest {
 
   @Test
   public void constructorSuccessBuiltOnMaster() throws Exception {
-    when(mockBuild.getBuiltOn()).thenReturn(mockNode);
+    when(mockComputer.getNode()).thenReturn(mockNode);
 
     when(mockNode.getDisplayName()).thenReturn("Jenkins");
     when(mockNode.getLabelString()).thenReturn("");
@@ -187,11 +201,12 @@ public class BuildDataTest {
 
     verifyMocks();
     verifyTestResultActions();
+    verifiyNodeActions(1);
   }
 
   @Test
   public void constructorSuccessBuiltOnSlave() throws Exception {
-    when(mockBuild.getBuiltOn()).thenReturn(mockNode);
+    when(mockComputer.getNode()).thenReturn(mockNode);
 
     when(mockNode.getDisplayName()).thenReturn("Test Slave 01");
     when(mockNode.getLabelString()).thenReturn("Test Slave");
@@ -208,6 +223,7 @@ public class BuildDataTest {
 
     verifyMocks();
     verifyTestResultActions();
+    verifiyNodeActions(2);
   }
 
   @Test
@@ -252,8 +268,7 @@ public class BuildDataTest {
     when(mockBuild.getEnvironments()).thenReturn(new EnvironmentList(Arrays.asList(mockEnvironment)));
     when(mockBuild.getBuildVariables()).thenReturn(new HashMap<String, String>());
 
-    when(mockBuild.getBuiltOn()).thenReturn(mockNode);
-
+    when(mockComputer.getNode()).thenReturn(mockNode);
     when(mockNode.getDisplayName()).thenReturn("Jenkins");
     when(mockNode.getLabelString()).thenReturn("");
 
@@ -289,6 +304,7 @@ public class BuildDataTest {
 
     verifyMocks();
     verifyTestResultActions();
+    verifiyNodeActions(1);
   }
 
   @Test // JENKINS-41324
@@ -297,8 +313,7 @@ public class BuildDataTest {
     when(mockBuild.getBuildVariables()).thenReturn(new HashMap<String, String>());
     when(mockBuild.getSensitiveBuildVariables()).thenReturn(new HashSet<String>());
 
-    when(mockBuild.getBuiltOn()).thenReturn(mockNode);
-
+    when(mockComputer.getNode()).thenReturn(mockNode);
     when(mockNode.getDisplayName()).thenReturn("Jenkins");
     when(mockNode.getLabelString()).thenReturn("");
 
@@ -327,6 +342,7 @@ public class BuildDataTest {
 
     verifyMocks();
     verifyTestResultActions();
+    verifiyNodeActions(1);
   }
 
   @Test

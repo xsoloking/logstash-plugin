@@ -25,6 +25,7 @@
 package jenkins.plugins.logstash.persistence;
 
 import hudson.model.Action;
+import hudson.model.Computer;
 import hudson.model.Environment;
 import hudson.model.Result;
 import hudson.model.AbstractBuild;
@@ -138,7 +139,7 @@ public class BuildData {
   public BuildData(AbstractBuild<?, ?> build, Date currentTime, TaskListener listener) {
     initData(build, currentTime);
 
-    Node node = build.getBuiltOn();
+    Node node = build.getExecutor().getOwner().getNode();
     if (node == null) {
       buildHost = "master";
       buildLabel = "master";
