@@ -17,7 +17,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.*;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -97,9 +97,7 @@ public class LogstashWriterTest {
     when(mockBuild.getSensitiveBuildVariables()).thenReturn(Collections.emptySet());
     when(mockBuild.getEnvironments()).thenReturn(null);
     when(mockBuild.getAction(AbstractTestResultAction.class)).thenReturn(mockTestResultAction);
-    when(mockBuild.getLog(0)).thenReturn(Arrays.asList());
     when(mockBuild.getLog(3)).thenReturn(Arrays.asList("line 1", "line 2", "line 3", "Log truncated..."));
-    when(mockBuild.getLog(Integer.MAX_VALUE)).thenReturn(Arrays.asList("line 1", "line 2", "line 3", "line 4"));
     when(mockBuild.getEnvironment(null)).thenReturn(new EnvVars());
     when(mockBuild.getExecutor()).thenReturn(mockExecutor);
     when(mockExecutor.getOwner()).thenReturn(mockComputer);
