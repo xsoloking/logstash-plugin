@@ -4,7 +4,6 @@ import static net.sf.json.test.JSONAssert.assertEquals;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 

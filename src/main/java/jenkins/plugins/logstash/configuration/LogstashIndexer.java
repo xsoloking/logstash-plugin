@@ -19,6 +19,13 @@ import jenkins.plugins.logstash.Messages;
 import jenkins.plugins.logstash.persistence.AbstractLogstashIndexerDao;
 import net.sf.json.JSONObject;
 
+/**
+ * Extension point for logstash indexers.
+ * This extension point provides the configuration for the indexer. You also have to implement the actual
+ * indexer in a separate class extending {@link AbstractLogstashIndexerDao}.
+ *
+ * @param <T> The class implementing the push to the indexer
+ */
 public abstract class LogstashIndexer<T extends AbstractLogstashIndexerDao>
     extends AbstractDescribableImpl<LogstashIndexer<?>>
     implements ExtensionPoint, ReconfigurableDescribable<LogstashIndexer<?>>
@@ -75,7 +82,8 @@ public abstract class LogstashIndexer<T extends AbstractLogstashIndexerDao>
   /**
    * Gets the instance of the actual {@link AbstractLogstashIndexerDao} that is represented by this
    * configuration.
-   * When changing the configuration a new instance will be created.
+   * Checks via {@link #shouldRefreshInstance()}, if a new {@link AbstractLogstashIndexerDao}
+   * needs to be created. If yes calls {@link #createIndexerInstance()} to create a new instance.
    *
    * @return {@link AbstractLogstashIndexerDao} instance
    */
@@ -97,6 +105,11 @@ public abstract class LogstashIndexer<T extends AbstractLogstashIndexerDao>
    */
   protected abstract T createIndexerInstance();
 
+  /**
+   * Decides whether a new instance of {@link AbstractLogstashIndexerDao} should be created or not.
+   * Implementers should overwrite this method if they have own configuration.
+   * @return true if the current configuration differs from the current {@link AbstractLogstashIndexerDao dao instance}
+   */
   protected boolean shouldRefreshInstance()
   {
     if (instance == null)
@@ -147,6 +160,9 @@ public abstract class LogstashIndexer<T extends AbstractLogstashIndexerDao>
     public abstract int getDefaultPort();
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public LogstashIndexer<T> reconfigure(StaplerRequest req, JSONObject form) throws FormException
   {

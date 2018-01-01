@@ -36,6 +36,11 @@ public class LogstashConfiguration extends GlobalConfiguration
     load();
   }
 
+  /**
+   * Returns the current logstash indexer configuration.
+   *
+   * @return configuration instance
+   */
   public LogstashIndexer<?> getLogstashIndexer()
   {
     return logstashIndexer;
@@ -46,6 +51,10 @@ public class LogstashConfiguration extends GlobalConfiguration
     this.logstashIndexer = logstashIndexer;
   }
 
+  /**
+   * Returns the actual instance of the logstash dao.
+   * @return dao instance
+   */
   @CheckForNull
   public LogstashIndexerDao getIndexerInstance()
   {
