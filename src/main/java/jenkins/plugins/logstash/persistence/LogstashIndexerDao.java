@@ -53,9 +53,9 @@ public interface LogstashIndexerDao {
 	UDP
   }
 
-  public String getDescription();
-
   public void setCharset(Charset charset);
+
+  public String getDescription();
 
   /**
    * Sends the log data to the Logstash indexer.

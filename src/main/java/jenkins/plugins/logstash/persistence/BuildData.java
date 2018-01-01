@@ -26,17 +26,15 @@ package jenkins.plugins.logstash.persistence;
 
 import hudson.model.Action;
 import hudson.model.Environment;
+import hudson.model.Executor;
 import hudson.model.Result;
 import hudson.model.AbstractBuild;
 import hudson.model.TaskListener;
 import hudson.model.Run;
 import hudson.model.Node;
-import hudson.model.Executor;
 import hudson.tasks.test.AbstractTestResultAction;
 import hudson.tasks.test.TestResult;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -66,7 +64,7 @@ import com.google.gson.GsonBuilder;
  */
 public class BuildData {
   // ISO 8601 date format
-  public transient static final FastDateFormat DATE_FORMATTER = FastDateFormat.getInstance("yyyy-MM-dd'T'HH:mm:ss.SSSZ", null, null);
+  private transient static final FastDateFormat DATE_FORMATTER = FastDateFormat.getInstance("yyyy-MM-dd'T'HH:mm:ssZ");
   private final static Logger LOGGER = Logger.getLogger(MethodHandles.lookup().lookupClass().getCanonicalName());
   public static class TestData {
     private int totalCount, skipCount, failCount, passCount;
@@ -75,7 +73,6 @@ public class BuildData {
 
     public static class FailedTest {
       private final String fullName, errorDetails;
-
       public FailedTest(String fullName, String errorDetails) {
         super();
         this.fullName = fullName;
@@ -154,48 +151,30 @@ public class BuildData {
     }
   }
 
-  protected String id;
-  protected String result;
-  protected String projectName;
-  protected String fullProjectName;
-  protected String displayName;
-  protected String fullDisplayName;
-  protected String description;
-  protected String url;
-  protected String buildHost;
-  protected String buildLabel;
-  protected int buildNum;
-  protected long buildDuration;
-  protected transient String timestamp; // This belongs in the root object
-  protected String rootProjectName;
-  protected String rootFullProjectName;
-  protected String rootProjectDisplayName;
-  protected int rootBuildNum;
-  protected Map<String, String> buildVariables;
-  protected Set<String> sensitiveBuildVariables;
-  protected TestData testResults = null;
+  private String id;
+  private String result;
+  private String projectName;
+  private String fullProjectName;
+  private String displayName;
+  private String fullDisplayName;
+  private String description;
+  private String url;
+  private String buildHost;
+  private String buildLabel;
+  private int buildNum;
+  private long buildDuration;
+  private transient String timestamp; // This belongs in the root object
+  private String rootProjectName;
+  private String rootFullProjectName;
+  private String rootProjectDisplayName;
+  private int rootBuildNum;
+  private Map<String, String> buildVariables;
+  private Set<String> sensitiveBuildVariables;
+  private TestData testResults = null;
 
   // Freestyle project build
   public BuildData(AbstractBuild<?, ?> build, Date currentTime, TaskListener listener) {
     initData(build, currentTime);
-
-    Executor executor = build.getExecutor();
-    if (executor == null)
-    {
-        buildHost = "master";
-        buildLabel = "master";
-    }
-    else
-    {
-        Node node = executor.getOwner().getNode();
-        if (node == null) {
-          buildHost = "master";
-          buildLabel = "master";
-        } else {
-          buildHost = StringUtils.isBlank(node.getDisplayName()) ? "master" : node.getDisplayName();
-          buildLabel = StringUtils.isBlank(node.getLabelString()) ? "master" : node.getLabelString();
-        }
-    }
 
     // build.getDuration() is always 0 in Notifiers
     rootProjectName = build.getRootBuild().getProject().getName();
@@ -236,24 +215,6 @@ public class BuildData {
   public BuildData(Run<?, ?> build, Date currentTime, TaskListener listener) {
     initData(build, currentTime);
 
-    Executor executor = build.getExecutor();
-    if (executor == null)
-    {
-        buildHost = "master";
-        buildLabel = "master";
-    }
-    else
-    {
-        Node node = executor.getOwner().getNode();
-        if (node == null) {
-          buildHost = "master";
-          buildLabel = "master";
-        } else {
-          buildHost = StringUtils.isBlank(node.getDisplayName()) ? "master" : node.getDisplayName();
-          buildLabel = StringUtils.isBlank(node.getLabelString()) ? "master" : node.getLabelString();
-        }
-    }
-
     rootProjectName = projectName;
     rootFullProjectName = fullProjectName;
     rootProjectDisplayName = displayName;
@@ -269,16 +230,24 @@ public class BuildData {
   }
 
   private void initData(Run<?, ?> build, Date currentTime) {
+
+    Executor executor = build.getExecutor();
+    if (executor == null) {
+        buildHost = "master";
+        buildLabel = "master";
+    } else {
+        Node node = executor.getOwner().getNode();
+        if (node == null) {
+          buildHost = "master";
+          buildLabel = "master";
+        } else {
+          buildHost = StringUtils.isBlank(node.getDisplayName()) ? "master" : node.getDisplayName();
+          buildLabel = StringUtils.isBlank(node.getLabelString()) ? "master" : node.getLabelString();
+        }
+    }
+
     Result result = build.getResult();
-    if (build.getResult() == null)
-    {
-      this.result = null;
-    }
-    else
-    {
-      this.result = result.toString();
-    }
-    //result = build.getResult() == null ? null : build.getResult().toString();
+    this.result = result == null ? null : result.toString();
     id = build.getId();
     projectName = build.getParent().getName();
     fullProjectName = build.getParent().getFullName();
@@ -466,5 +435,10 @@ public class BuildData {
 
   public void setTestResults(TestData testResults) {
     this.testResults = testResults;
+  }
+
+  public static FastDateFormat getDateFormatter()
+  {
+    return DATE_FORMATTER;
   }
 }

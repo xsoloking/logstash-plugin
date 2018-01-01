@@ -9,9 +9,7 @@ import javax.annotation.CheckForNull;
 import org.kohsuke.stapler.StaplerRequest;
 
 import com.cloudbees.syslog.MessageFormat;
-import com.cloudbees.syslog.integration.jul.SyslogMessageFormatter;
 
-import hudson.DescriptorExtensionList;
 import hudson.Extension;
 import hudson.init.InitMilestone;
 import hudson.init.Initializer;
@@ -19,13 +17,11 @@ import jenkins.model.GlobalConfiguration;
 import jenkins.plugins.logstash.LogstashInstallation.Descriptor;
 import jenkins.plugins.logstash.configuration.ElasticSearch;
 import jenkins.plugins.logstash.configuration.LogstashIndexer;
-import jenkins.plugins.logstash.configuration.LogstashIndexer.LogstashIndexerDescriptor;
 import jenkins.plugins.logstash.configuration.RabbitMq;
 import jenkins.plugins.logstash.configuration.Redis;
 import jenkins.plugins.logstash.configuration.Syslog;
 import jenkins.plugins.logstash.persistence.LogstashIndexerDao;
 import jenkins.plugins.logstash.persistence.LogstashIndexerDao.IndexerType;
-import jenkins.plugins.logstash.persistence.LogstashIndexerDao.SyslogFormat;
 import net.sf.json.JSONObject;
 
 @Extension

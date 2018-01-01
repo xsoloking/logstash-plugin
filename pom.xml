@@ -5,8 +5,9 @@
   <properties>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <skipIntegrationTests>true</skipIntegrationTests>
-    <jenkins.version>2.7.4</jenkins.version>
     <jenkins-test-harness.version>2.23</jenkins-test-harness.version>
+    <java.level>7</java.level>
+    <jenkins.version>2.7.4</jenkins.version>
   </properties>
   
   <parent>

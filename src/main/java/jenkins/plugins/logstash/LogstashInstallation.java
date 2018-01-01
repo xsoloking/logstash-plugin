@@ -28,7 +28,6 @@ import hudson.Extension;
 import hudson.tools.ToolDescriptor;
 import hudson.tools.ToolProperty;
 import hudson.tools.ToolInstallation;
-import hudson.util.FormValidation;
 
 import java.util.List;
 
@@ -36,12 +35,10 @@ import jenkins.model.Jenkins;
 import jenkins.plugins.logstash.persistence.LogstashIndexerDao.IndexerType;
 import jenkins.plugins.logstash.persistence.LogstashIndexerDao.SyslogFormat;
 import jenkins.plugins.logstash.persistence.LogstashIndexerDao.SyslogProtocol;
-import net.sf.json.JSONObject;
 
-import org.apache.commons.lang.StringUtils;
 import org.kohsuke.stapler.DataBoundConstructor;
-import org.kohsuke.stapler.QueryParameter;
-import org.kohsuke.stapler.StaplerRequest;
+
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
  * POJO for storing global configurations shared between components.
@@ -75,6 +72,12 @@ public class LogstashInstallation extends ToolInstallation {
     public Descriptor() {
       super();
       load();
+    }
+
+
+    @Override
+    public String getDisplayName() {
+      return Messages.DisplayName();
     }
 
 
@@ -125,10 +128,5 @@ public class LogstashInstallation extends ToolInstallation {
       return key;
     }
 
-
-    @Override
-    public String getDisplayName() {
-      return Messages.DisplayName();
-    }
   }
 }

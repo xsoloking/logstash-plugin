@@ -44,6 +44,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 import com.google.common.collect.Range;
 
@@ -95,7 +96,7 @@ public class ElasticSearchDao extends AbstractLogstashIndexerDao {
     }
 
     if (StringUtils.isNotBlank(username)) {
-      auth = Base64.encodeBase64String((username + ":" + StringUtils.defaultString(password)).getBytes(Charset.defaultCharset()));
+      auth = Base64.encodeBase64String((username + ":" + StringUtils.defaultString(password)).getBytes(StandardCharsets.UTF_8));
     } else {
       auth = null;
     }
@@ -167,7 +168,7 @@ public class ElasticSearchDao extends AbstractLogstashIndexerDao {
     PrintStream stream = null;
     try {
       byteStream = new ByteArrayOutputStream();
-      stream = new PrintStream(byteStream, true, "UTF-8");
+      stream = new PrintStream(byteStream, true, StandardCharsets.UTF_8.name());
 
       try {
         stream.print("HTTP error code: ");
@@ -180,7 +181,7 @@ public class ElasticSearchDao extends AbstractLogstashIndexerDao {
         stream.println(ExceptionUtils.getStackTrace(e));
       }
       stream.flush();
-      return byteStream.toString("UTF-8");
+      return byteStream.toString(StandardCharsets.UTF_8.name());
     }
     catch (UnsupportedEncodingException e)
     {

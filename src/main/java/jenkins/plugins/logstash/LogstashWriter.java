@@ -35,6 +35,8 @@ import net.sf.json.JSONObject;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
@@ -74,7 +76,23 @@ public class LogstashWriter {
     } else {
       this.jenkinsUrl = getJenkinsUrl();
       this.buildData = getBuildData();
+      dao.setCharset(charset);
     }
+  }
+
+  /**
+   * gets the charset that Jenkins is using during this build.
+   * @return
+   */
+  public Charset getCharset()
+  {
+    return charset;
+  }
+
+  // for testing only
+  LogstashIndexerDao getDao()
+  {
+    return dao;
   }
 
   /**
@@ -132,11 +150,6 @@ public class LogstashWriter {
   // Method to encapsulate calls for unit-testing
   LogstashIndexerDao getIndexerDao() {
     return LogstashConfiguration.getInstance().getIndexerInstance();
-  }
-
-  LogstashIndexerDao getDao()
-  {
-      return dao;
   }
 
   BuildData getBuildData() {
@@ -203,8 +216,4 @@ public class LogstashWriter {
     }
   }
 
-  public Charset getCharset()
-  {
-      return charset;
-  }
 }

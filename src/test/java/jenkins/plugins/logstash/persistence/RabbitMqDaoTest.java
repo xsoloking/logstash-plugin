@@ -38,6 +38,8 @@ public class RabbitMqDaoTest {
       verify(mockPool, atLeastOnce()).setPassword(password);
     }
 
+    factory.setCharset(Charset.defaultCharset());
+
     return factory;
   }
 
