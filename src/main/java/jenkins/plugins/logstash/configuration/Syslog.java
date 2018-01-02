@@ -9,67 +9,110 @@ import hudson.Extension;
 import jenkins.plugins.logstash.persistence.LogstashIndexerDao.SyslogProtocol;
 import jenkins.plugins.logstash.persistence.SyslogDao;
 
-public class Syslog extends LogstashIndexer<SyslogDao>
-{
-  private MessageFormat messageFormat;
-  private SyslogProtocol syslogProtocol;
+public class Syslog extends LogstashIndexer<SyslogDao> {
 
-  @DataBoundConstructor
-  public Syslog()
-  {
-  }
+	private SyslogData data;
 
-  public MessageFormat getMessageFormat()
-  {
-    return messageFormat;
-  }
+	@DataBoundConstructor
+	public Syslog()
+	{
+	}
 
-  @DataBoundSetter
-  public void setMessageFormat(MessageFormat messageFormat)
-  {
-    this.messageFormat = messageFormat;
-  }
+	public MessageFormat getMessageFormat()
+	{
+		return data.getMessageFormat();
+	}
 
-  public SyslogProtocol getSyslogProtocol()
-  {
-    return syslogProtocol;
-  }
+	public SyslogProtocol getSyslogProtocol()
+	{
+		return data.getSyslogProtocol();
+	}
 
-  @DataBoundSetter()
-  public void setSyslogProtocol(SyslogProtocol syslogProtocol)
-  {
-    this.syslogProtocol = syslogProtocol;
-  }
+	public void setMessageFormat(MessageFormat messageFormat)
+	{
+		data.setMessageFormat(messageFormat);
+	}
 
-  @Override
-  protected boolean shouldRefreshInstance()
-  {
-    return super.shouldRefreshInstance() ||
-        !instance.getMessageFormat().equals(messageFormat);
-  }
+	public void setSyslogProtocol(SyslogProtocol syslogProtocol)
+	{
+		data.setSyslogProtocol(syslogProtocol);
+	}
 
-  @Override
-  public SyslogDao createIndexerInstance()
-  {
-    SyslogDao syslogDao = new SyslogDao(host, port);
-    syslogDao.setMessageFormat(messageFormat);
-    return syslogDao;
-  }
+	@Override
+	public SyslogDao createIndexerInstance()
+	{
+		SyslogDao syslogDao = new SyslogDao(getData().getHost(), getData().getPort());
+		syslogDao.setMessageFormat(getMessageFormat());
+		return syslogDao;
+	}
 
-  @Extension
-  public static class SyslogDescriptor extends LogstashIndexerDescriptor
-  {
+	static class SyslogData extends LogstashIndexerData {
 
-    @Override
-    public String getDisplayName()
-    {
-      return "Syslog";
-    }
+		private MessageFormat messageFormat;
+		private SyslogProtocol syslogProtocol;
 
-    @Override
-    public int getDefaultPort()
-    {
-      return 519;
-    }
-  }
+		public MessageFormat getMessageFormat()
+		{
+			return messageFormat;
+		}
+
+		public SyslogProtocol getSyslogProtocol()
+		{
+			return syslogProtocol;
+		}
+		
+		public void setMessageFormat(MessageFormat messageFormat)
+		{
+			this.messageFormat = messageFormat;
+		}
+		
+		public void setSyslogProtocol(SyslogProtocol syslogProtocol)
+		{
+			this.syslogProtocol = syslogProtocol;
+		}
+
+		@Override
+		public int hashCode() {
+			final int prime = 31;
+			int result = super.hashCode();
+			result = prime * result + ((messageFormat == null) ? 0 : messageFormat.hashCode());
+			return result;
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj)
+				return true;
+			if (!super.equals(obj))
+				return false;
+			if (getClass() != obj.getClass())
+				return false;
+			SyslogData other = (SyslogData) obj;
+			if (messageFormat != other.messageFormat)
+				return false;
+			return true;
+		}	
+	}
+
+	@Extension
+	public static class SyslogDescriptor extends LogstashIndexerDescriptor
+	{
+		@Override
+		public String getDisplayName()
+		{
+			return "Syslog";
+		}
+
+		@Override
+		public int getDefaultPort()
+		{
+			return 519;
+		}
+	}
+
+	@Override
+	protected LogstashIndexerData getData()
+	{
+		return data;
+	}
 }

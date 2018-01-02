@@ -1,5 +1,7 @@
 package jenkins.plugins.logstash.configuration;
 
+import java.util.Objects;
+
 import javax.annotation.Nonnull;
 
 import org.apache.commons.lang.StringUtils;
@@ -29,11 +31,10 @@ import net.sf.json.JSONObject;
 public abstract class LogstashIndexer<T extends AbstractLogstashIndexerDao>
     extends AbstractDescribableImpl<LogstashIndexer<?>>
     implements ExtensionPoint, ReconfigurableDescribable<LogstashIndexer<?>>
-{
-  protected String host;
-  protected int port;
+{ 
 
   protected transient T instance;
+  protected transient LogstashIndexerData createdFor;
 
   /**
    * Returns the host for connecting to the indexer.
@@ -42,7 +43,7 @@ public abstract class LogstashIndexer<T extends AbstractLogstashIndexerDao>
    */
   public String getHost()
   {
-    return host;
+    return getData().getHost();
   }
 
   /**
@@ -54,7 +55,7 @@ public abstract class LogstashIndexer<T extends AbstractLogstashIndexerDao>
   @DataBoundSetter
   public void setHost(String host)
   {
-    this.host = host;
+    this.getData().setHost(host);
   }
 
   /**
@@ -64,7 +65,7 @@ public abstract class LogstashIndexer<T extends AbstractLogstashIndexerDao>
    */
   public int getPort()
   {
-    return port;
+    return getData().getPort();
   }
 
   /**
@@ -76,7 +77,7 @@ public abstract class LogstashIndexer<T extends AbstractLogstashIndexerDao>
   @DataBoundSetter
   public void setPort(int port)
   {
-    this.port = port;
+    this.getData().setPort(port);
   }
 
   /**
@@ -93,6 +94,8 @@ public abstract class LogstashIndexer<T extends AbstractLogstashIndexerDao>
     if (shouldRefreshInstance())
     {
       instance = createIndexerInstance();
+      // XXX synchronize?
+      createdFor = getData().clone();
     }
     return instance;
   }
@@ -117,8 +120,7 @@ public abstract class LogstashIndexer<T extends AbstractLogstashIndexerDao>
       return true;
     }
 
-    boolean matches = StringUtils.equals(instance.getHost(), host) &&
-        (instance.getPort() == port);
+    boolean matches = Objects.equals(getData(), createdFor);
     return !matches;
   }
 
@@ -169,4 +171,8 @@ public abstract class LogstashIndexer<T extends AbstractLogstashIndexerDao>
     req.bindJSON(this, form);
     return this;
   }
+
+  protected abstract LogstashIndexerData getData();
+
+
 }

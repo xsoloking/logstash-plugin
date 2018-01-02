@@ -39,7 +39,9 @@ public class LogstashIndexerTest
   public static class LogstashIndexerForTest extends LogstashIndexer<MemoryDao>
   {
 
-    public LogstashIndexerForTest(String host, int port)
+    private LogstashIndexerData data;
+
+	public LogstashIndexerForTest(String host, int port)
     {
       setHost(host);
       setPort(port);
@@ -50,5 +52,10 @@ public class LogstashIndexerTest
     {
       return new MemoryDao(getHost(), getPort());
     }
+
+	@Override
+	protected LogstashIndexerData getData() {
+		 return data;
+	}
   }
 }
