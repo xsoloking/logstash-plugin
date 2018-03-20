@@ -35,8 +35,27 @@ import hudson.model.AbstractProject;
 import hudson.model.BuildListener;
 import hudson.tasks.BuildWrapper;
 import hudson.tasks.BuildWrapperDescriptor;
+import org.jenkinsci.plugins.scriptsecurity.sandbox.groovy.SecureGroovyScript;
+
+
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.annotation.CheckForNull;
+
+import groovy.lang.Binding;
+
+import org.kohsuke.stapler.DataBoundConstructor;
+import org.kohsuke.stapler.DataBoundSetter;
+
+import com.michelin.cio.hudson.plugins.maskpasswords.MaskPasswordsBuildWrapper;
+import com.michelin.cio.hudson.plugins.maskpasswords.MaskPasswordsBuildWrapper.VarPasswordPair;
+import com.michelin.cio.hudson.plugins.maskpasswords.MaskPasswordsConfig;
 
 /**
+ * Logstash note on each output line.
  *
  * This BuildWrapper is only a marker and has no other functionality.
  * The {@link LogstashConsoleLogFilter} uses this BuildWrapper to decide if it should send the log to an indexer.
@@ -48,12 +67,20 @@ import hudson.tasks.BuildWrapperDescriptor;
 public class LogstashBuildWrapper extends BuildWrapper
 {
 
+  @CheckForNull
+  private SecureGroovyScript secureGroovyScript;
+
   /**
    * Create a new {@link LogstashBuildWrapper}.
    */
   @DataBoundConstructor
   public LogstashBuildWrapper()
   {}
+
+  @DataBoundSetter
+  public void setSecureGroovyScript(@CheckForNull SecureGroovyScript script) {
+    this.secureGroovyScript = script != null ? script.configuringWithNonKeyItem() : null;
+  }
 
   /**
    * {@inheritDoc}
@@ -71,6 +98,27 @@ public class LogstashBuildWrapper extends BuildWrapper
   public DescriptorImpl getDescriptor()
   {
     return (DescriptorImpl)super.getDescriptor();
+  }
+  
+  @Override
+  public DescriptorImpl getDescriptor() {
+    return (DescriptorImpl) super.getDescriptor();
+  }
+
+  @CheckForNull
+  public SecureGroovyScript getSecureGroovyScript() {
+  	// FIXME probbably needs to be moved
+    return secureGroovyScript;
+  }
+
+  // Method to encapsulate calls for unit-testing
+  LogstashWriter getLogStashWriter(AbstractBuild<?, ?> build, OutputStream errorStream) {
+    LogstashScriptProcessor processor = null;
+    if (secureGroovyScript != null) {
+      processor = new LogstashScriptProcessor(secureGroovyScript, errorStream);
+    }
+      
+    return new LogstashWriter(build, errorStream, null, build.getCharset(), processor);
   }
 
   /**
