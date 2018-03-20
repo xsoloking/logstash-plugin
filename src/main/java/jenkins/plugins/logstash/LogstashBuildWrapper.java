@@ -37,22 +37,12 @@ import hudson.tasks.BuildWrapper;
 import hudson.tasks.BuildWrapperDescriptor;
 import org.jenkinsci.plugins.scriptsecurity.sandbox.groovy.SecureGroovyScript;
 
-
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.annotation.CheckForNull;
 
-import groovy.lang.Binding;
-
-import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
-
-import com.michelin.cio.hudson.plugins.maskpasswords.MaskPasswordsBuildWrapper;
-import com.michelin.cio.hudson.plugins.maskpasswords.MaskPasswordsBuildWrapper.VarPasswordPair;
-import com.michelin.cio.hudson.plugins.maskpasswords.MaskPasswordsConfig;
 
 /**
  * Logstash note on each output line.
@@ -92,12 +82,6 @@ public class LogstashBuildWrapper extends BuildWrapper
     return new Environment()
     {
     };
-  }
-
-  @Override
-  public DescriptorImpl getDescriptor()
-  {
-    return (DescriptorImpl)super.getDescriptor();
   }
   
   @Override

@@ -25,6 +25,7 @@
 package jenkins.plugins.logstash.persistence;
 
 import java.nio.charset.Charset;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 

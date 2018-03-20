@@ -158,9 +158,9 @@
     </dependency>
 
     <dependency>
-        <groupId>com.github.akostadinov</groupId>
-        <artifactId>script-security-plugin</artifactId>
-        <version>master-SNAPSHOT</version>
+       <groupId>org.jenkins-ci.plugins</groupId>
+       <artifactId>script-security</artifactId>
+       <version>1.37</version>
     </dependency>
 
     <dependency>

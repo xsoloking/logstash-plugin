@@ -75,9 +75,13 @@ public class LogstashWriter {
   private final LogstashPayloadProcessor payloadProcessor;
 
   public LogstashWriter(Run<?, ?> run, OutputStream error, TaskListener listener) {
-    this(run, error, listener, null, null);
+    this(run, error, listener, null);
   }
 
+  public LogstashWriter(Run<?, ?> run, OutputStream error, TaskListener listener, Charset charset) {
+	    this(run, error, listener, charset, null);
+	  }
+  
   public LogstashWriter(Run<?, ?> run, OutputStream error, TaskListener listener, Charset charset, LogstashPayloadProcessor payloadProcessor) {
     this.errorStream = error != null ? error : System.err;
     this.build = run;

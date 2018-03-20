@@ -157,9 +157,8 @@ public class BuildData {
     }
   }
 
-  @CheckForNull protected String result;
   private String id;
-  private String result;
+  @CheckForNull private String result;
   private String projectName;
   private String fullProjectName;
   private String displayName;
