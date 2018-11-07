@@ -37,8 +37,8 @@
   <scm>
     <connection>scm:git:git://github.com/jenkinsci/logstash-plugin.git</connection>
     <developerConnection>scm:git:git@github.com:jenkinsci/logstash-plugin.git</developerConnection>
-    <url>https://github.com/jenkinsci/logstash-plugin</url>
     <tag>HEAD</tag>
+    <url>https://github.com/jenkinsci/logstash-plugin</url>
   </scm>
   <distributionManagement>
     <repository>
@@ -216,22 +216,6 @@
         <configuration>
           <compatibleSinceVersion>2.0</compatibleSinceVersion>
         </configuration>
-      </plugin>
-      <!-- http://jira.codehaus.org/browse/MRELEASE-812 -->
-      <plugin>
-        <artifactId>maven-release-plugin</artifactId>
-        <dependencies>
-          <dependency>
-            <groupId>org.apache.maven.scm</groupId>
-            <artifactId>maven-scm-api</artifactId>
-            <version>1.9.1</version>
-          </dependency>
-          <dependency>
-            <groupId>org.apache.maven.scm</groupId>
-            <artifactId>maven-scm-provider-gitexe</artifactId>
-            <version>1.9.1</version>
-          </dependency>
-        </dependencies>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
