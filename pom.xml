@@ -54,7 +54,6 @@
   </distributionManagement>
 
   <properties>
-    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <skipIntegrationTests>true</skipIntegrationTests>
     <java.level>8</java.level>
     <jenkins.version>2.60.3</jenkins.version>
