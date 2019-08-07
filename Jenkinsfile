@@ -3,7 +3,7 @@ node('linux') {
             sh '''
                which git
                curl https://pre-commit.com/install-local.py | python -
-               /home/jenkins/bin/pre-commit
+               /home/jenkins/bin/pre-commit run --all-files
            '''
     }
 }
