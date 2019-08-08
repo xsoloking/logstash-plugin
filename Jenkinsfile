@@ -1,5 +1,6 @@
 node('linux') {  
     stage('pre-commit') {
+            checkout scm
             sh '''
                git --version
                curl https://pre-commit.com/install-local.py | python -
