@@ -10,6 +10,7 @@ import java.util.logging.Logger;
 import javax.annotation.CheckForNull;
 
 import hudson.util.Secret;
+import jenkins.plugins.logstash.configuration.*;
 import org.kohsuke.stapler.StaplerRequest;
 
 import com.cloudbees.syslog.MessageFormat;
@@ -21,11 +22,6 @@ import hudson.init.InitMilestone;
 import hudson.init.Initializer;
 import jenkins.model.GlobalConfiguration;
 import jenkins.plugins.logstash.LogstashInstallation.Descriptor;
-import jenkins.plugins.logstash.configuration.ElasticSearch;
-import jenkins.plugins.logstash.configuration.LogstashIndexer;
-import jenkins.plugins.logstash.configuration.RabbitMq;
-import jenkins.plugins.logstash.configuration.Redis;
-import jenkins.plugins.logstash.configuration.Syslog;
 import jenkins.plugins.logstash.persistence.LogstashIndexerDao;
 import jenkins.plugins.logstash.persistence.LogstashIndexerDao.IndexerType;
 import net.sf.json.JSONObject;
@@ -165,6 +161,17 @@ public class LogstashConfiguration extends GlobalConfiguration
             redis.setKey(descriptor.getKey());
             redis.setPassword(Secret.fromString(descriptor.getPassword()));
             logstashIndexer = redis;
+            enabled = true;
+            break;
+          case MONGODB:
+            LOGGER.log(Level.INFO, "Migrating logstash configuration for MongoDB");
+            MongoDb mongoDb = new MongoDb();
+            mongoDb.setHost(descriptor.getHost());
+            mongoDb.setPort(descriptor.getPort());
+            mongoDb.setDatabase(descriptor.getKey());
+            mongoDb.setUsername(descriptor.getUsername());
+            mongoDb.setPassword(Secret.fromString(descriptor.getPassword()));
+            logstashIndexer = mongoDb;
             enabled = true;
             break;
           case ELASTICSEARCH:

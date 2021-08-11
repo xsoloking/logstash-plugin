@@ -39,6 +39,7 @@ public interface LogstashIndexerDao {
   @Deprecated
   enum IndexerType {
     REDIS,
+    MONGODB,
     RABBIT_MQ,
     ELASTICSEARCH,
     SYSLOG
