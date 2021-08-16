@@ -60,20 +60,20 @@ public class MongoDao extends HostBasedLogstashIndexerDao {
   private final String database;
   private final String serviceUri;
   private final String collection;
-  private final String keys;
+  private final String customization;
 
-  public MongoDao(String host, int port, String database, String username, String password, String serviceUri, String collection, String keys) {
-    this(null, host, port, database, username, password, serviceUri, collection, keys);
+  public MongoDao(String host, int port, String database, String username, String password, String serviceUri, String collection, String customization) {
+    this(null, host, port, database, username, password, serviceUri, collection, customization);
   }
 
-  MongoDao(MongoClient factory, String host, int port, String database, String username, String password, String serviceUri, String collection, String keys) {
+  MongoDao(MongoClient factory, String host, int port, String database, String username, String password, String serviceUri, String collection, String customization) {
     super(host, port);
     this.database = database;
     this.username = username;
     this.password = password;
     this.serviceUri = serviceUri;
     this.collection = collection;
-    this.keys = keys;
+    this.customization = customization;
 
     // The MongoPool must be a singleton
     // We assume this is used as a singleton as well
@@ -100,8 +100,8 @@ public class MongoDao extends HostBasedLogstashIndexerDao {
     return this.collection;
   }
 
-  public String getKeys() {
-    return this.keys;
+  public String getCustomization() {
+    return this.customization;
   }
 
   private synchronized MongoClient getMongoClient() {
@@ -126,7 +126,7 @@ public class MongoDao extends HostBasedLogstashIndexerDao {
   }
 
   @SuppressWarnings("unchecked")
-  private String getCollectionName(String data, String keys) {
+  private String getCollectionName(String data, String customization) {
     ObjectMapper mapper = new ObjectMapper();
     Map<String, Object> dMap = null;
     try {
@@ -134,14 +134,14 @@ public class MongoDao extends HostBasedLogstashIndexerDao {
     } catch (JsonProcessingException e) {
       e.printStackTrace();
     }
-    String[] groups = keys.split(";");
+    String[] groups = customization.split(";");
     StringBuilder value = new StringBuilder();
     if (dMap != null && groups.length > 0) {
       for(String group: groups) {
         if (! group.isEmpty()) {
           Map<String, Object> tmp = new HashMap<>(dMap);
-          String[] mKeys = group.split("\\.");
-            for (String key: mKeys)  {
+          String[] mCustomization = group.split("\\.");
+            for (String key: mCustomization)  {
               try {
                 tmp = (Map<String, Object>) tmp.get(key);
               } catch (ClassCastException  e)  {
@@ -173,8 +173,8 @@ public class MongoDao extends HostBasedLogstashIndexerDao {
     if (collection != null && !collection.isEmpty()) {
       collectionName = collection;
     }
-    if (keys != null && !keys.isEmpty()) {
-      collectionName = getCollectionName(data, keys);
+    if (customization != null && !customization.isEmpty()) {
+      collectionName = getCollectionName(data, customization);
     }
 
     try {

@@ -1,0 +1,28 @@
+jenkins:
+  agentProtocols:
+  - "JNLP4-connect"
+  - "Ping"
+  disableRememberMe: false
+  mode: NORMAL
+  numExecutors: 2
+  primaryView:
+    all:
+      name: "all"
+  quietPeriod: 5
+  scmCheckoutRetryCount: 0
+  slaveAgentPort: 0
+  views:
+  - all:
+      name: "all"
+unclassified:
+  logstashConfiguration:
+    enableGlobally: true
+    enabled: true
+    logstashIndexer:
+      mongoDb:
+        customization: "data.fullProjectName"
+        database: "jenkins"
+        host: "35.221.241.150"
+        port: 27017
+        username: "jenkins"
+    milliSecondTimestamps: true

@@ -66,12 +66,15 @@ public class LogstashInstallation extends ToolInstallation {
     private transient String username;
     private transient String password;
     private transient String key;
+    private transient String collection;
+    private transient String database;
+    private transient String serviceUri;
+    private transient String customization;
 
     public Descriptor() {
       super();
       load();
     }
-
 
     @Override
     public String getDisplayName() {
@@ -126,5 +129,20 @@ public class LogstashInstallation extends ToolInstallation {
       return key;
     }
 
+    public String getCollection() {
+      return collection;
+    }
+
+    public String getDatabase() {
+      return database;
+    }
+
+    public String getCustomization() {
+      return customization;
+    }
+
+    public String getServiceUri() {
+      return serviceUri;
+    }
   }
 }

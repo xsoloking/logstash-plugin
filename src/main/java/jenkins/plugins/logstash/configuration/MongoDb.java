@@ -18,7 +18,7 @@ public class MongoDb extends HostBasedLogstashIndexer<MongoDao>
   private String username;
   private Secret password;
   private String serviceUri;
-  private String keys;
+  private String customization;
   private String collection;
 
   @DataBoundConstructor
@@ -67,13 +67,13 @@ public class MongoDb extends HostBasedLogstashIndexer<MongoDao>
     this.password = password;
   }
 
-  public String getkeys() {
-    return keys;
+  public String getCustomization() {
+    return customization;
   }
 
   @DataBoundSetter
-  public void setkeys(String keys) {
-    this.keys = keys;
+  public void setCustomization(String customization) {
+    this.customization = customization;
   }
 
   public String getCollection() {
@@ -111,7 +111,7 @@ public class MongoDb extends HostBasedLogstashIndexer<MongoDao>
     {
       return false;
     }
-    if (!StringUtils.equals(keys, other.keys))
+    if (!StringUtils.equals(customization, other.customization))
     {
       return false;
     }
@@ -130,7 +130,7 @@ public class MongoDb extends HostBasedLogstashIndexer<MongoDao>
     result = prime * result + ((database == null) ? 0 : database.hashCode());
     result = prime * result + ((username == null) ? 0 : username.hashCode());
     result = prime * result + ((serviceUri == null) ? 0 : serviceUri.hashCode());
-    result = prime * result + ((keys == null) ? 0 : keys.hashCode());
+    result = prime * result + ((customization == null) ? 0 : customization.hashCode());
     result = prime * result + ((collection == null) ? 0 : collection.hashCode());
     result = prime * result + Secret.toString(password).hashCode();
     return result;
@@ -139,7 +139,7 @@ public class MongoDb extends HostBasedLogstashIndexer<MongoDao>
   @Override
   public MongoDao createIndexerInstance()
   {
-    return new MongoDao(getHost(), getPort(), database, username, Secret.toString(password), serviceUri, collection, keys);
+    return new MongoDao(getHost(), getPort(), database, username, Secret.toString(password), serviceUri, collection, customization);
   }
 
   @Extension

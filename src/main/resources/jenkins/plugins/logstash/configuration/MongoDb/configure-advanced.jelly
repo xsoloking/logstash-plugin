@@ -15,7 +15,7 @@
     <f:entry title="${%Collection}" field="collection">
       <f:textbox/>
     </f:entry>
-    <f:entry title="${%Keys}" field="keys">
+    <f:entry title="${%Customization}" field="customization">
       <f:textbox/>
     </f:entry>
 </j:jelly>

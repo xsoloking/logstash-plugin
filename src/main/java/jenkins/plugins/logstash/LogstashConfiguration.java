@@ -171,6 +171,10 @@ public class LogstashConfiguration extends GlobalConfiguration
             mongoDb.setDatabase(descriptor.getKey());
             mongoDb.setUsername(descriptor.getUsername());
             mongoDb.setPassword(Secret.fromString(descriptor.getPassword()));
+            mongoDb.setCollection(descriptor.getCollection());
+            mongoDb.setCustomization(descriptor.getCustomization());
+            mongoDb.setServiceUri(descriptor.getServiceUri());
+            mongoDb.setDatabase(descriptor.getDatabase());
             logstashIndexer = mongoDb;
             enabled = true;
             break;
