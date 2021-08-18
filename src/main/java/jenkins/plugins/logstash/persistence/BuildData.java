@@ -213,9 +213,9 @@ public class BuildData implements Serializable {
       // no base build env vars to merge
       LOGGER.log(WARNING,"Unable update logstash buildVariables with EnvVars from " + build.getDisplayName(),e);
     }
-    for (String key : sensitiveBuildVariables) {
-      buildVariables.remove(key);
-    }
+//    for (String key : sensitiveBuildVariables) {
+//      buildVariables.remove(key);
+//    }
   }
 
   // Pipeline project build
