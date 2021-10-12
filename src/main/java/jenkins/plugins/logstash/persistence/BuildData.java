@@ -58,6 +58,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import org.apache.commons.lang.time.FastDateFormat;
 
 /**
  * POJO for mapping build info to JSON.
@@ -265,7 +266,7 @@ public class BuildData implements Serializable {
     url = build.getUrl();
     buildNum = build.getNumber();
     buildDuration = currentTime.getTime() - build.getStartTimeInMillis();
-    timestamp = LogstashConfiguration.getInstance().getDateFormatter().format(build.getTimestamp().getTime());
+    timestamp = FastDateFormat.getInstance("yyyy-MM-dd'T'HH:mm:ss").format(build.getTimestamp().getTime());
     updateResult();
   }
 

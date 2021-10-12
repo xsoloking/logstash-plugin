@@ -42,14 +42,27 @@ public abstract class AbstractLogstashIndexerDao implements LogstashIndexerDao, 
   @Override
   public JSONObject buildPayload(BuildData buildData, String jenkinsUrl, List<String> logLines) {
     JSONObject payload = new JSONObject();
-    payload.put("data", buildData.toJson());
-    payload.put("message", logLines);
-    payload.put("source", "jenkins");
-    payload.put("source_host", jenkinsUrl);
-    payload.put("@buildTimestamp", buildData.getTimestamp());
-    payload.put("@timestamp", LogstashConfiguration.getInstance().getDateFormatter().format(Calendar.getInstance().getTime()));
-    payload.put("@version", 1);
-
+    String log = String.join("/n", logLines);
+    String timestamp = buildData.getTimestamp();
+    String msg = timestamp + " [INFO] " + log;
+    int logType = 2;
+    if(log.contains("[INFO]")) {
+      msg = timestamp + " " + log;
+    } else if(log.contains("[ERROR]") || log.contains("ERROR")) {
+      logType = 1;
+      msg = timestamp + " " + log;
+    } else if (log.contains("WARNING")) {
+      logType = 3;
+      msg = timestamp + " " + log;
+    }
+    payload.put("flowId", buildData.getBuildVariables().get("flowId"));
+    payload.put("flowInstanceId", buildData.getBuildVariables().get("flowInstanceId"));
+    payload.put("nodeInstanceId", buildData.getBuildVariables().get("nodeInstanceId"));
+    payload.put("taskInstanceId", buildData.getBuildVariables().get("taskInstanceId"));
+    payload.put("executeBatchId", buildData.getBuildVariables().get("executeBatchId"));
+    payload.put("logContent", msg);
+    payload.put("htmlLog", log.contains("http://") || log.contains("https://"));
+    payload.put("logType", logType);
     return payload;
   }
 

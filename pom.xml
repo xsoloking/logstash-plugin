@@ -60,8 +60,8 @@
   </distributionManagement>
 
   <properties>
-    <revision>2.5.0</revision>
-    <changelist>-SNAPSHOT</changelist>
+    <revision>2.5.5</revision>
+    <changelist>-int</changelist>
     <skipIntegrationTests>true</skipIntegrationTests>
     <java.level>8</java.level>
     <jenkins.version>2.235.1</jenkins.version>
