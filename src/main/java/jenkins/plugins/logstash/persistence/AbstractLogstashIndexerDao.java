@@ -25,10 +25,10 @@
 package jenkins.plugins.logstash.persistence;
 
 import java.io.Serializable;
-import java.util.Calendar;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
-import jenkins.plugins.logstash.LogstashConfiguration;
 import net.sf.json.JSONObject;
 
 /**
@@ -39,11 +39,13 @@ import net.sf.json.JSONObject;
  */
 public abstract class AbstractLogstashIndexerDao implements LogstashIndexerDao, Serializable {
 
+  private final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+
   @Override
   public JSONObject buildPayload(BuildData buildData, String jenkinsUrl, List<String> logLines) {
     JSONObject payload = new JSONObject();
     String log = String.join("/n", logLines);
-    String timestamp = buildData.getTimestamp();
+    String timestamp = sdf.format(new Timestamp(System.currentTimeMillis()));
     String msg = timestamp + " [INFO] " + log;
     int logType = 2;
     if(log.contains("[INFO]")) {
@@ -55,11 +57,11 @@ public abstract class AbstractLogstashIndexerDao implements LogstashIndexerDao, 
       logType = 3;
       msg = timestamp + " " + log;
     }
-    payload.put("flowId", buildData.getBuildVariables().get("flowId"));
-    payload.put("flowInstanceId", buildData.getBuildVariables().get("flowInstanceId"));
-    payload.put("nodeInstanceId", buildData.getBuildVariables().get("nodeInstanceId"));
-    payload.put("taskInstanceId", buildData.getBuildVariables().get("taskInstanceId"));
-    payload.put("executeBatchId", buildData.getBuildVariables().get("executeBatchId"));
+    payload.put("flowId", Long.getLong(buildData.getBuildVariables().get("flowId")));
+    payload.put("flowInstanceId", Long.parseLong(buildData.getBuildVariables().get("flowInstanceId")));
+    payload.put("nodeInstanceId", Long.parseLong(buildData.getBuildVariables().get("nodeInstanceId")));
+    payload.put("taskInstanceId", Long.parseLong(buildData.getBuildVariables().get("taskInstanceId")));
+    payload.put("executeBatchId", Long.parseLong(buildData.getBuildVariables().get("executeBatchId")));
     payload.put("logContent", msg);
     payload.put("htmlLog", log.contains("http://") || log.contains("https://"));
     payload.put("logType", logType);
