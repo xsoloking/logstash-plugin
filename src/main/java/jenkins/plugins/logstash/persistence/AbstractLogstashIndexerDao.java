@@ -57,11 +57,32 @@ public abstract class AbstractLogstashIndexerDao implements LogstashIndexerDao, 
       logType = 3;
       msg = timestamp + " " + log;
     }
-    payload.put("flowId", Long.getLong(buildData.getBuildVariables().get("flowId")));
-    payload.put("flowInstanceId", Long.parseLong(buildData.getBuildVariables().get("flowInstanceId")));
-    payload.put("nodeInstanceId", Long.parseLong(buildData.getBuildVariables().get("nodeInstanceId")));
-    payload.put("taskInstanceId", Long.parseLong(buildData.getBuildVariables().get("taskInstanceId")));
-    payload.put("executeBatchId", Long.parseLong(buildData.getBuildVariables().get("executeBatchId")));
+    try {
+      payload.put("flowId", Long.parseLong(buildData.getBuildVariables().get("flowId")));
+    } catch (NumberFormatException e) {
+      payload.put("flowId", buildData.getBuildVariables().get("flowId"));
+    }
+    try {
+      payload.put("flowInstanceId", Long.parseLong(buildData.getBuildVariables().get("flowInstanceId")));
+    } catch (NumberFormatException e) {
+      payload.put("flowInstanceId", buildData.getBuildVariables().get("flowInstanceId"));
+    }
+    try {
+      payload.put("nodeInstanceId", Long.parseLong(buildData.getBuildVariables().get("nodeInstanceId")));
+    } catch (NumberFormatException e) {
+      payload.put("nodeInstanceId", buildData.getBuildVariables().get("nodeInstanceId"));
+    }
+    try {
+      payload.put("taskInstanceId", Long.parseLong(buildData.getBuildVariables().get("taskInstanceId")));
+    } catch (NumberFormatException e) {
+      payload.put("taskInstanceId", buildData.getBuildVariables().get("taskInstanceId"));
+    }
+    try {
+      payload.put("executeBatchId", Long.parseLong(buildData.getBuildVariables().get("executeBatchId")));
+    }  catch (NumberFormatException e) {
+      payload.put("executeBatchId", buildData.getBuildVariables().get("executeBatchId"));
+    }
+
     payload.put("logContent", msg);
     payload.put("htmlLog", log.contains("http://") || log.contains("https://"));
     payload.put("logType", logType);
