@@ -10,6 +10,7 @@ import java.util.logging.Logger;
 import javax.annotation.CheckForNull;
 
 import hudson.util.Secret;
+import jenkins.model.Jenkins;
 import jenkins.plugins.logstash.configuration.*;
 import org.kohsuke.stapler.StaplerRequest;
 
@@ -295,9 +296,12 @@ public class LogstashConfiguration extends GlobalConfiguration
     }
   }
 
-  public static LogstashConfiguration getInstance()
-  {
-    return GlobalConfiguration.all().get(LogstashConfiguration.class);
+  public static LogstashConfiguration getInstance() {
+    Jenkins jenkins = Jenkins.getInstanceOrNull();
+    if (jenkins == null) {
+      return null;
+    }
+    return (LogstashConfiguration) jenkins.getExtensionList(LogstashConfiguration.class).get(0);
   }
 
 }
