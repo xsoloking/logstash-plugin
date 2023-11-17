@@ -26,10 +26,7 @@ package jenkins.plugins.logstash.persistence;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mongodb.ConnectionString;
-import com.mongodb.MongoClientSettings;
-import com.mongodb.MongoCredential;
-import com.mongodb.ServerAddress;
+import com.mongodb.*;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
@@ -41,6 +38,7 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * MongoDB Data Access Object.
@@ -112,12 +110,20 @@ public class MongoDao extends HostBasedLogstashIndexerDao {
         settings = MongoClientSettings.builder()
                 .credential(credential)
                 .applyConnectionString(new ConnectionString(serviceUri))
+                .applyToConnectionPoolSettings(builder -> {
+                  // default mongodb values: min=0 and max=100
+                  builder.minSize(0).maxSize(200).maxConnectionIdleTime(30, TimeUnit.SECONDS);
+                })
                 .build();
       } else {
         settings = MongoClientSettings.builder()
                 .credential(credential)
                 .applyToClusterSettings(builder ->
                         builder.hosts(Collections.singletonList(new ServerAddress(getHost(), getPort()))))
+                .applyToConnectionPoolSettings(builder -> {
+                  // default mongodb values: min=0 and max=100
+                  builder.minSize(0).maxSize(200).maxConnectionIdleTime(30, TimeUnit.SECONDS);
+                })
                 .build();
       }
       pool = MongoClients.create(settings);
@@ -184,8 +190,9 @@ public class MongoDao extends HostBasedLogstashIndexerDao {
       mongoDatabase.createCollection(collectionName);
       MongoCollection<Document> mongoCollection = mongoDatabase.getCollection(collectionName);
       mongoCollection.insertOne(Document.parse(data));
+    } catch (MongoInterruptedException e) {
+      throw new IOException("Failed to insert new doc with exception: MongoInterruptedException " + e.getMessage());
     }
-
   }
 
 }

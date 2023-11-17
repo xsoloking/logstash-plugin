@@ -60,7 +60,7 @@
   </distributionManagement>
 
   <properties>
-    <revision>2.5.9</revision>
+    <revision>2.5.10</revision>
     <changelist>-int</changelist>
     <skipIntegrationTests>true</skipIntegrationTests>
     <java.level>8</java.level>
